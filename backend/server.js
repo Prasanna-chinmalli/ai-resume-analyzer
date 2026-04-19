@@ -1,13 +1,26 @@
+require("dotenv").config();
+
+// ✅ Add this block here
+if (!process.env.OPENAI_API_KEY) {
+    console.warn("⚠️ OpenAI API key not found. AI features will fallback.");
+}
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const pdfParse = require("pdf-parse");
+const OpenAI = require("openai");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+
 const upload = multer({
+    storage: multer.memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024 }
 });
 
@@ -231,7 +244,7 @@ function extractDynamicPhrases(jdText) {
     );
 }
 
-function extractKeywords(jd) {
+function extractKeywordsRuleBased(jd) {
     const detectedSkills = detectSkills(jd);
     const dynamicPhrases = extractDynamicPhrases(jd);
 
@@ -247,6 +260,61 @@ function extractKeywords(jd) {
     });
 
     return unique(combined);
+}
+
+async function extractJDWithAI(jdText) {
+    if (!process.env.OPENAI_API_KEY) {
+        return null;
+    }
+
+    try {
+        const prompt = `
+Extract structured job requirements from this job description.
+
+Return ONLY valid JSON in this exact format:
+{
+  "role": "",
+  "requiredSkills": [],
+  "preferredSkills": [],
+  "toolsFrameworks": [],
+  "softSkills": [],
+  "experienceRequirement": ""
+}
+
+Rules:
+- Include only meaningful requirements from the JD
+- Normalize obvious duplicates
+- Keep skill names concise
+- Do not include explanations outside JSON
+
+Job Description:
+${jdText}
+`;
+
+        const response = await client.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.2
+        });
+
+        const content = response.choices?.[0]?.message?.content?.trim();
+
+        if (!content) return null;
+
+        const parsed = JSON.parse(content);
+
+        return {
+            role: parsed.role || "",
+            requiredSkills: Array.isArray(parsed.requiredSkills) ? parsed.requiredSkills : [],
+            preferredSkills: Array.isArray(parsed.preferredSkills) ? parsed.preferredSkills : [],
+            toolsFrameworks: Array.isArray(parsed.toolsFrameworks) ? parsed.toolsFrameworks : [],
+            softSkills: Array.isArray(parsed.softSkills) ? parsed.softSkills : [],
+            experienceRequirement: parsed.experienceRequirement || ""
+        };
+    } catch (error) {
+        console.log("AI extraction failed, using fallback:", error.message);
+        return null;
+    }
 }
 
 function getResumeEvidence(resumeText) {
@@ -331,7 +399,7 @@ function scoreMatch(requiredKeywords, matchedSkills, resumeText, jobDescription)
     return Math.max(0, Math.min(100, Math.round(score)));
 }
 
-function generateSuggestions(missingSkills, resumeText) {
+function generateSuggestions(missingSkills, resumeText, atsDecisionStatus) {
     const resume = normalizeText(resumeText);
     const suggestions = [];
 
@@ -376,6 +444,10 @@ function generateSuggestions(missingSkills, resumeText) {
         suggestions.push("Add your GitHub profile link.");
     }
 
+    if (atsDecisionStatus === "REJECT") {
+        suggestions.push("Tailor your resume specifically for this JD before applying.");
+    }
+
     if (suggestions.length === 0) {
         suggestions.push("Your resume matches the JD well. Add quantified achievements to improve further.");
     }
@@ -383,21 +455,65 @@ function generateSuggestions(missingSkills, resumeText) {
     return unique(suggestions);
 }
 
-function generateAIExplanation(score, matchedSkills, missingSkills, limitedExtraction) {
+function generateAIExplanation(score, matchedSkills, missingSkills, limitedExtraction, atsDecision) {
     if (limitedExtraction) {
-        return `The analysis found only a limited number of JD requirements, so the result may be incomplete. The estimated ATS-like score is ${score}/100. Try using a more detailed JD or improving extraction coverage.`;
+        return `The analysis found only a limited number of JD requirements, so the result may be incomplete. The estimated ATS-like score is ${score}/100. ATS prediction: ${atsDecision.status}. ${atsDecision.message}`;
     }
 
     if (missingSkills.length === 0) {
-        return `Your resume matches the detected JD requirements well. The estimated ATS-like score is ${score}/100 because the major extracted requirements are already present in the resume.`;
+        return `Your resume matches the detected JD requirements well. The estimated ATS-like score is ${score}/100. ATS prediction: ${atsDecision.status}. ${atsDecision.message}`;
     }
 
-    return `Your resume matches some important JD requirements such as ${matchedSkills.slice(0, 5).join(", ") || "a few detected skills"}, but it is missing key requirements like ${missingSkills.slice(0, 6).join(", ")}. Because ATS-style systems look for direct keyword and skill alignment, these gaps reduce the estimated score to ${score}/100.`;
+    return `Your resume matches some important JD requirements such as ${matchedSkills.slice(0, 5).join(", ") || "a few detected skills"}, but it is missing key requirements like ${missingSkills.slice(0, 6).join(", ")}. These gaps reduce the estimated score to ${score}/100. ATS prediction: ${atsDecision.status}. ${atsDecision.message}`;
 }
 
-function analyzeText(resumeText, jobDescription = "") {
-    const role = inferRole(jobDescription);
-    const requiredKeywords = extractKeywords(jobDescription);
+function getATSDecision(score, missingSkills, limitedExtraction) {
+    if (limitedExtraction) {
+        return {
+            status: "REVIEW",
+            message: "Limited JD extraction. Manual review recommended before trusting this ATS prediction."
+        };
+    }
+
+    const majorMissing = missingSkills.length;
+
+    if (score >= 80 && majorMissing <= 2) {
+        return {
+            status: "PASS",
+            message: "High chance of passing initial ATS screening."
+        };
+    }
+
+    if (score >= 55 && majorMissing <= 5) {
+        return {
+            status: "REVIEW",
+            message: "Moderate chance. Resume may pass, but important gaps should be improved."
+        };
+    }
+
+    return {
+        status: "REJECT",
+        message: "High rejection risk because several important JD requirements are missing."
+    };
+}
+
+async function analyzeText(resumeText, jobDescription = "") {
+    const ruleBasedKeywords = extractKeywordsRuleBased(jobDescription);
+    const aiData = await extractJDWithAI(jobDescription);
+
+    const role = aiData?.role?.trim() || inferRole(jobDescription);
+
+    let requiredKeywords = [];
+    if (aiData) {
+        requiredKeywords = unique([
+            ...(aiData.requiredSkills || []),
+            ...(aiData.toolsFrameworks || []),
+            ...ruleBasedKeywords
+        ]);
+    } else {
+        requiredKeywords = ruleBasedKeywords;
+    }
+
     const resumeSkills = detectSkills(resumeText);
 
     const matchedSkills = requiredKeywords.filter((skill) =>
@@ -409,8 +525,15 @@ function analyzeText(resumeText, jobDescription = "") {
     const limitedExtraction = requiredKeywords.length < 3;
 
     const score = scoreMatch(requiredKeywords, matchedSkills, resumeText, jobDescription);
-    const suggestions = generateSuggestions(missingSkills, resumeText);
-    const aiExplanation = generateAIExplanation(score, matchedSkills, missingSkills, limitedExtraction);
+    const atsDecision = getATSDecision(score, missingSkills, limitedExtraction);
+    const suggestions = generateSuggestions(missingSkills, resumeText, atsDecision.status);
+    const aiExplanation = generateAIExplanation(
+        score,
+        matchedSkills,
+        missingSkills,
+        limitedExtraction,
+        atsDecision
+    );
 
     return {
         role,
@@ -420,7 +543,8 @@ function analyzeText(resumeText, jobDescription = "") {
         missingSkills,
         suggestions,
         aiExplanation,
-        limitedExtraction
+        limitedExtraction,
+        atsDecision
     };
 }
 
@@ -471,7 +595,7 @@ function detectDocumentType(text) {
     return "unknown";
 }
 
-app.post("/analyze", (req, res) => {
+app.post("/analyze", async (req, res) => {
     const { resumeText, jobDescription } = req.body;
 
     if (!resumeText || !resumeText.trim()) {
@@ -483,11 +607,34 @@ app.post("/analyze", (req, res) => {
             missingSkills: [],
             suggestions: ["Please provide resume text."],
             aiExplanation: "Resume text is missing.",
-            limitedExtraction: true
+            limitedExtraction: true,
+            atsDecision: {
+                status: "REVIEW",
+                message: "Resume text missing. ATS prediction unavailable."
+            }
         });
     }
 
-    res.json(analyzeText(resumeText, jobDescription || ""));
+    try {
+        const result = await analyzeText(resumeText, jobDescription || "");
+        res.json(result);
+    } catch (error) {
+        console.log("ANALYZE ERROR:", error.message);
+        res.status(500).json({
+            role: "Unknown",
+            score: 0,
+            requiredKeywords: [],
+            matchedSkills: [],
+            missingSkills: [],
+            suggestions: ["Error analyzing resume."],
+            aiExplanation: "Error analyzing resume.",
+            limitedExtraction: true,
+            atsDecision: {
+                status: "REVIEW",
+                message: "Analysis failed. Please try again."
+            }
+        });
+    }
 });
 
 app.post("/upload", upload.single("resume"), async (req, res) => {
@@ -556,6 +703,7 @@ app.post("/upload-jd", upload.single("jdFile"), async (req, res) => {
     }
 });
 
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
