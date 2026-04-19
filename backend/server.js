@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-// ✅ Add this block here
+// ✅ Safety check
 if (!process.env.OPENAI_API_KEY) {
     console.warn("⚠️ OpenAI API key not found. AI features will fallback.");
 }
@@ -15,9 +15,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+// ✅ Create client ONLY if key exists
+const client = process.env.OPENAI_API_KEY
+    ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+    : null;
 
 const upload = multer({
     storage: multer.memoryStorage(),
