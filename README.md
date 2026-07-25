@@ -18,6 +18,34 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## ✨ Features
 
+---
+
+# 📸 Screenshots
+
+## Home Page
+
+![Home](screenshots/home.png)
+
+---
+
+## Upload Resume & Job Description
+
+![Upload](screenshots/upload.png)
+
+---
+
+## Analysis Results
+
+![Analysis](screenshots/analysis.png)
+
+---
+
+## Generated Report
+
+![Report](screenshots/report.png)
+
+---
+
 - 📄 Upload Resume (PDF)
 - 💼 Upload Job Description (PDF)
 - 🤖 AI-powered Resume Analysis
@@ -27,6 +55,32 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 - 💡 Personalized Improvement Suggestions
 - 📥 Download Analysis Report
 - 📱 Responsive User Interface
+
+---
+
+# 📸 Screenshots
+
+## 🏠 Home Page
+
+![Home](screenshots/home.png)
+
+---
+
+## 📤 Upload Resume & Job Description
+
+![Upload](screenshots/upload.png)
+
+---
+
+## 📊 Analysis Results
+
+![Analysis](screenshots/analysis.png)
+
+---
+
+## 📄 Generated Report
+
+![Report](screenshots/report.png)
 
 ---
 
