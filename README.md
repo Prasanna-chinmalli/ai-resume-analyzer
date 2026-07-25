@@ -88,20 +88,16 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## Architecture Diagram 
 
+
 ```mermaid
-flowchart TD
-
-    A[User] --> B[React Frontend (Vercel)]
-    B --> C[Upload Resume & Job Description]
-    C --> D[Express.js Backend]
-
-    D --> E[PDF Parser]
-    D --> F[OpenAI API]
-
-    E --> G[ATS Analysis Engine]
-    F --> G
-
-    G --> H[Analysis Report (PDF)]
+flowchart LR
+    U["User"] --> F["React Frontend"]
+    F -->|Upload Resume & JD| B["Express Backend"]
+    B --> P["PDF Parser"]
+    B --> O["OpenAI API"]
+    P --> A["ATS Analysis"]
+    O --> A
+    A --> R["PDF Report"]
 ```
 
 --- 
