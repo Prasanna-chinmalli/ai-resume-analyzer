@@ -1,5 +1,12 @@
 # 🤖 AI Resume Analyzer
 
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-Backend-black?logo=express)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black)
+![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?logo=openai)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 An AI-powered web application that analyzes resumes against job descriptions to generate an ATS compatibility score, identify matched and missing skills, and provide AI-driven recommendations for improving resume quality.
 ---
 
