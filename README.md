@@ -8,6 +8,13 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 An AI-powered web application that analyzes resumes against job descriptions to generate an ATS compatibility score, identify matched and missing skills, and provide AI-driven recommendations for improving resume quality.
+
+---
+
+<p align="center">
+  <img src="screenshots/home.png" alt="AI Resume Analyzer Home Page" width="900">
+</p>
+
 ---
 
 ## 🎯 Key Highlights
@@ -64,8 +71,6 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## 🛠 Tech Stack
 
-## 🛠 Tech Stack
-
 | Category | Technologies |
 |----------|--------------|
 | Frontend | React.js, HTML5, CSS3 |
@@ -74,6 +79,8 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 | Libraries | pdf-parse, jsPDF |
 | Deployment | Vercel |
 
+---
+
 ### Deployment
 - Vercel
 
@@ -81,41 +88,36 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## Architecture Diagram 
 
-                User
-                  │
-                  ▼
-        React Frontend (Vercel)
-                  │
-         Upload Resume & JD
-                  │
-                  ▼
-        Express.js Backend
-                  │
-      ┌───────────┴────────────┐
-      │                        │
-      ▼                        ▼
- PDF Parser              OpenAI API
-      │                        │
-      └───────────┬────────────┘
-                  ▼
-        ATS Analysis Engine
-                  │
-                  ▼
-         Analysis Report (PDF)
+```mermaid
+flowchart TD
+
+    A[User] --> B[React Frontend (Vercel)]
+    B --> C[Upload Resume & Job Description]
+    C --> D[Express.js Backend]
+
+    D --> E[PDF Parser]
+    D --> F[OpenAI API]
+
+    E --> G[ATS Analysis Engine]
+    F --> G
+
+    G --> H[Analysis Report (PDF)]
+```
 
 --- 
 
 ## 📂 Project Structure
 
+```text
 ai-resume-analyzer/
 │
 ├── backend/
-├── my-app/
+├── frontend/
 ├── screenshots/
-├── README.md
 ├── .gitignore
-└── LICENSE
-
+├── LICENSE
+└── README.md
+```
 ---
        
 ## ⚙️ Installation
@@ -129,9 +131,9 @@ git clone https://github.com/Prasanna-chinmalli/ai-resume-analyzer.git
 Install frontend dependencies
 
 ```bash
-cd my-app
+cd frontend
 npm install
-npm start
+npm starts
 ```
 
 Install backend dependencies
