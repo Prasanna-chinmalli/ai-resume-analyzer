@@ -33,7 +33,7 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ---
 
-## ✨ Features
+## 🚀 Features
 
 ---
 
@@ -51,7 +51,7 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 # 📸 Screenshots
 
-## 📤 Upload Resume & Job Description
+## 🏠 Home Page
 
 ![Home](screenshots/home.png)
 
@@ -71,14 +71,14 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## 🛠 Tech Stack
 
+Built using modern web technologies and OpenAI APIs for intelligent resume analysis.
+
 | Category | Technologies |
 |----------|--------------|
 | Frontend | React.js, HTML5, CSS3 |
 | Backend | Node.js, Express.js |
 | AI | OpenAI API |
 | Libraries | pdf-parse, jsPDF |
-| Deployment | Vercel |
-
 ---
 
 ### Deployment
@@ -86,18 +86,17 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ---
 
-## Architecture Diagram 
-
+## 🏗️ Architecture Diagram
 
 ```mermaid
 flowchart LR
-    U["User"] --> F["React Frontend"]
-    F -->|Upload Resume & JD| B["Express Backend"]
-    B --> P["PDF Parser"]
-    B --> O["OpenAI API"]
-    P --> A["ATS Analysis"]
-    O --> A
-    A --> R["PDF Report"]
+    U["User"] --> FE["React Frontend"]
+    FE -->|Upload Resume & Job Description| BE["Express Backend"]
+    BE --> PDF["PDF Parser"]
+    BE --> AI["OpenAI API"]
+    PDF --> ATS["ATS Analysis Engine"]
+    AI --> ATS
+    ATS --> REPORT["PDF Analysis Report"]
 ```
 
 --- 
@@ -129,7 +128,7 @@ Install frontend dependencies
 ```bash
 cd frontend
 npm install
-npm starts
+npm start
 ```
 
 Install backend dependencies
@@ -179,5 +178,5 @@ PORT=5000
 
 **Prasanna Chinmalli**
 
-- GitHub: https://github.com/Prasanna-chinmalli
-- LinkedIn: https://www.linkedin.com/in/prasanna-v-chinmalli-05175a278/
+- GitHub: [Prasanna-chinmalli](https://github.com/Prasanna-chinmalli)
+- LinkedIn: [Prasanna Chinmalli](https://www.linkedin.com/in/prasanna-v-chinmalli-05175a278/)
