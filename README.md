@@ -44,15 +44,9 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 # 📸 Screenshots
 
-## 🏠 Home Page
-
-![Home](screenshots/home.png)
-
----
-
 ## 📤 Upload Resume & Job Description
 
-![Suggestions](screenshots/suggestions.png)
+![Home](screenshots/home.png)
 
 ---
 
