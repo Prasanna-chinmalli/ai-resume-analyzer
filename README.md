@@ -10,39 +10,23 @@
 An AI-powered web application that analyzes resumes against job descriptions to generate an ATS compatibility score, identify matched and missing skills, and provide AI-driven recommendations for improving resume quality.
 ---
 
-## 🚀 Live Demo
+## 🎯 Key Highlights
+
+- 🚀 AI-powered ATS Resume Analyzer
+- 🤖 OpenAI API Integration
+- 📄 Intelligent PDF Parsing
+- 📊 ATS Score & Skill Matching
+- ⚡ Full Stack React + Node.js Application
+
+---
+
+##  **Live Application**
 
 🌐 https://ai-resume-analyzer-eosin-six.vercel.app/
 
 ---
 
 ## ✨ Features
-
----
-
-# 📸 Screenshots
-
-## Home Page
-
-![Home](screenshots/home.png)
-
----
-
-## Upload Resume & Job Description
-
-![Upload](screenshots/upload.png)
-
----
-
-## Analysis Results
-
-![Analysis](screenshots/analysis.png)
-
----
-
-## Generated Report
-
-![Report](screenshots/report.png)
 
 ---
 
@@ -68,7 +52,7 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## 📤 Upload Resume & Job Description
 
-![Upload](screenshots/upload.png)
+![Suggestions](screenshots/suggestions.png)
 
 ---
 
@@ -86,48 +70,60 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 
 ## 🛠 Tech Stack
 
-### Frontend
-- React.js
-- HTML5
-- CSS3
+## 🛠 Tech Stack
 
-### Backend
-- Node.js
-- Express.js
-
-### AI & APIs
-- OpenAI API
-
-### Libraries
-- pdf-parse
-- jsPDF
+| Category | Technologies |
+|----------|--------------|
+| Frontend | React.js, HTML5, CSS3 |
+| Backend | Node.js, Express.js |
+| AI | OpenAI API |
+| Libraries | pdf-parse, jsPDF |
+| Deployment | Vercel |
 
 ### Deployment
 - Vercel
 
 ---
 
+## Architecture Diagram 
+
+                User
+                  │
+                  ▼
+        React Frontend (Vercel)
+                  │
+         Upload Resume & JD
+                  │
+                  ▼
+        Express.js Backend
+                  │
+      ┌───────────┴────────────┐
+      │                        │
+      ▼                        ▼
+ PDF Parser              OpenAI API
+      │                        │
+      └───────────┬────────────┘
+                  ▼
+        ATS Analysis Engine
+                  │
+                  ▼
+         Analysis Report (PDF)
+
+--- 
+
 ## 📂 Project Structure
 
-```
 ai-resume-analyzer/
 │
 ├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   ├── services/
-│   └── server.js
-│
 ├── my-app/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-│
-└── README.md
-```
+├── screenshots/
+├── README.md
+├── .gitignore
+└── LICENSE
 
 ---
-
+       
 ## ⚙️ Installation
 
 Clone the repository
@@ -191,4 +187,5 @@ PORT=5000
 
 **Prasanna Chinmalli**
 
-GitHub: https://github.com/Prasanna-chinmalli
+- GitHub: https://github.com/Prasanna-chinmalli
+- LinkedIn: https://www.linkedin.com/in/prasanna-v-chinmalli-05175a278/
