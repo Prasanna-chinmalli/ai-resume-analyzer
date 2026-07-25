@@ -1,7 +1,6 @@
 # 🤖 AI Resume Analyzer
 
-An AI-powered Resume Analyzer that compares resumes against job descriptions and provides an ATS score, skill match analysis, missing skills, and personalized improvement suggestions using Large Language Models.
-
+An AI-powered web application that analyzes resumes against job descriptions to generate an ATS compatibility score, identify matched and missing skills, and provide AI-driven recommendations for improving resume quality.
 ---
 
 ## 🚀 Live Demo
