@@ -1,0 +1,134 @@
+# 🤖 AI Resume Analyzer
+
+An AI-powered Resume Analyzer that compares resumes against job descriptions and provides an ATS score, skill match analysis, missing skills, and personalized improvement suggestions using Large Language Models.
+
+---
+
+## 🚀 Live Demo
+
+🌐 https://ai-resume-analyzer-eosin-six.vercel.app/
+
+---
+
+## ✨ Features
+
+- 📄 Upload Resume (PDF)
+- 💼 Upload Job Description (PDF)
+- 🤖 AI-powered Resume Analysis
+- 📊 ATS Compatibility Score
+- ✅ Matched Skills Detection
+- ❌ Missing Skills Identification
+- 💡 Personalized Improvement Suggestions
+- 📥 Download Analysis Report
+- 📱 Responsive User Interface
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- React.js
+- HTML5
+- CSS3
+
+### Backend
+- Node.js
+- Express.js
+
+### AI & APIs
+- OpenAI API
+
+### Libraries
+- pdf-parse
+- jsPDF
+
+### Deployment
+- Vercel
+
+---
+
+## 📂 Project Structure
+
+```
+ai-resume-analyzer/
+│
+├── backend/
+│   ├── routes/
+│   ├── controllers/
+│   ├── services/
+│   └── server.js
+│
+├── my-app/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+└── README.md
+```
+
+---
+
+## ⚙️ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/Prasanna-chinmalli/ai-resume-analyzer.git
+```
+
+Install frontend dependencies
+
+```bash
+cd my-app
+npm install
+npm start
+```
+
+Install backend dependencies
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env` file inside the backend directory.
+
+```env
+OPENAI_API_KEY=your_api_key
+PORT=5000
+```
+
+---
+
+## 📖 How It Works
+
+1. Upload your Resume (PDF)
+2. Upload the Job Description (PDF)
+3. AI extracts and analyzes the content
+4. View ATS Score
+5. Review matched and missing skills
+6. Download the generated report
+
+---
+
+## 🔮 Future Enhancements
+
+- Resume History
+- User Authentication
+- Multiple Resume Comparison
+- LinkedIn Profile Analysis
+- AI Interview Preparation
+- Multi-language Support
+
+---
+
+## 👨‍💻 Author
+
+**Prasanna Chinmalli**
+
+GitHub: https://github.com/Prasanna-chinmalli
