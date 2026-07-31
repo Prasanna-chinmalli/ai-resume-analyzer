@@ -23,7 +23,7 @@ An AI-powered web application that analyzes resumes against job descriptions to 
 - 🤖 OpenAI API Integration
 - 📄 Intelligent PDF Parsing
 - 📊 ATS Score & Skill Matching
-- ⚡ Full Stack React + Node.js Application
+- ⚡ Full Stack React + Node.js Applicatio
 
 ---
 
